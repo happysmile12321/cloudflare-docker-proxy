@@ -1,7 +1,7 @@
-name: Deploy to Cloudflare Workers(Staging)
+name: Deploy to Cloudflare Workers
 
 on:
-  pull_request:
+  push:
     branches:
       - master
     paths-ignore:
@@ -19,5 +19,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{secrets.CF_ACCOUNT_ID}}
-          command: deploy --env staging --minify src/index.js
-          environment: staging
+          command: deploy --env production --minify src/index.js
+          environment: production
