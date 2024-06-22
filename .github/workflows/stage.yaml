@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Workers(Staging)
+name: 部署到 Cloudflare Workers（Staging）
 
 on:
   pull_request:
@@ -14,10 +14,27 @@ jobs:
     name: Build & Deploy
     steps:
       - uses: actions/checkout@v4
-      - name: Publish
+      
+      - name: 设置 Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: 缓存 Node.js 模块
+        uses: actions/cache@v2
+        with:
+          path: ~/.yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: 安装依赖项
+        run: yarn install
+
+      - name: 发布
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{secrets.CF_ACCOUNT_ID}}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
           command: deploy --env staging --minify src/index.js
           environment: staging
